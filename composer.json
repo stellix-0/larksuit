@@ -1,0 +1,24 @@
+{
+    "name": "jeulia/larksuit",
+    "description": "飞书全功能PHP开发包是一个为PHP开发者提供的集成工具包，用于快速接入飞书开放平台的所有功能。该开发包封装了飞书API的调用细节，提供了简洁易用的接口，帮助开发者快速实现飞书集成。",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Jeulia\\Larksuit\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Felix"
+        }
+    ],
+    "require": {
+        "php": ">=8.0.0",
+        "guzzlehttp/guzzle": "^7.0",
+        "psr/log": "^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "10.5"
+    }
+}
