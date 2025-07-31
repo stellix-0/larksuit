@@ -3,3 +3,5 @@ composer.lock
 .editorconfig
 tests
 debug.log
+phpunit*
+.phpunit*

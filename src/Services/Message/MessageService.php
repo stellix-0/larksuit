@@ -22,20 +22,20 @@ class MessageService extends BaseService
      * @return array
      * @throws LarkException
      */
-    public function send(string $receiveId, string $msgType, array $content, string $receiveIdType='open_id'): array
+    public function send(string $receiveId, string $msgType, array $content, string $receiveIdType = 'open_id'): array
     {
         $httpClient = $this->client->getHttpClient();
         $headers    = $this->getTenantAccessTokenHeader();
 
         return $httpClient->post(
-            '/im/v1/messages', [
+            '/im/v1/messages?receive_id_type=' . $receiveIdType,
+            [
                 'receive_id'      => $receiveId,
                 'msg_type'        => $msgType,
                 'content'         => json_encode($content),
-                'receive_id_type' => $receiveIdType,
-            ], $headers
+            ],
+            $headers
         );
-
     }
 
 
@@ -48,11 +48,10 @@ class MessageService extends BaseService
      * @return array
      * @throws LarkException
      */
-    public function sendText(string $receiveId, string $text, string $receiveIdType='open_id'): array
+    public function sendText(string $receiveId, string $text, string $receiveIdType = 'open_id'): array
     {
         $content = ['text' => $text];
         return $this->send($receiveId, 'text', $content, $receiveIdType);
-
     }
 
 
@@ -65,11 +64,10 @@ class MessageService extends BaseService
      * @return array
      * @throws LarkException
      */
-    public function sendImage(string $receiveId, string $imageKey, string $receiveIdType='open_id'): array
+    public function sendImage(string $receiveId, string $imageKey, string $receiveIdType = 'open_id'): array
     {
         $content = ['image_key' => $imageKey];
         return $this->send($receiveId, 'image', $content, $receiveIdType);
-
     }
 
 
@@ -82,11 +80,10 @@ class MessageService extends BaseService
      * @return array
      * @throws LarkException
      */
-    public function sendInteractive(string $receiveId, array $card, string $receiveIdType='open_id'): array
+    public function sendInteractive(string $receiveId, array $card, string $receiveIdType = 'open_id'): array
     {
         $content = ['elements' => $card];
         return $this->send($receiveId, 'interactive', $content, $receiveIdType);
-
     }
 
 
@@ -103,10 +100,10 @@ class MessageService extends BaseService
      */
     public function getList(
         string $chatId,
-        int $limit=20,
-        string $startTime='',
-        string $endTime='',
-        string $messageId=''
+        int $limit = 20,
+        string $startTime = '',
+        string $endTime = '',
+        string $messageId = ''
     ): array {
         $httpClient = $this->client->getHttpClient();
         $headers    = $this->getTenantAccessTokenHeader();
@@ -130,7 +127,6 @@ class MessageService extends BaseService
         }
 
         return $httpClient->get('/im/v1/messages', $params, $headers);
-
     }
 
 
@@ -147,8 +143,7 @@ class MessageService extends BaseService
         $httpClient = $this->client->getHttpClient();
         $headers    = $this->getTenantAccessTokenHeader();
 
-        return $httpClient->get('/im/v1/messages/'.$messageId.'/resources/'.$fileKey, [], $headers);
-
+        return $httpClient->get('/im/v1/messages/' . $messageId . '/resources/' . $fileKey, [], $headers);
     }
 
 
@@ -160,7 +155,7 @@ class MessageService extends BaseService
      * @return array
      * @throws LarkException
      */
-    public function uploadImage(string $imagePath, string $imageType='message'): array
+    public function uploadImage(string $imagePath, string $imageType = 'message'): array
     {
         $httpClient = $this->client->getHttpClient();
         $headers    = $this->getTenantAccessTokenHeader();
@@ -168,7 +163,6 @@ class MessageService extends BaseService
         // Create a multipart request
         $file     = fopen($imagePath, 'r');
         $filename = basename($imagePath);
-        $filesize = filesize($imagePath);
 
         $multipart = [
             [
@@ -183,7 +177,9 @@ class MessageService extends BaseService
         ];
 
         $response = $httpClient->request(
-            'POST', '/im/v1/images', [
+            'POST',
+            '/im/v1/images',
+            [
                 'multipart' => $multipart,
                 'headers'   => $headers,
             ]
@@ -192,7 +188,6 @@ class MessageService extends BaseService
         fclose($file);
 
         return $response;
-
     }
 
 
@@ -205,7 +200,7 @@ class MessageService extends BaseService
      * @return array
      * @throws LarkException
      */
-    public function uploadFile(string $filePath, string $fileType, string $fileName=''): array
+    public function uploadFile(string $filePath, string $fileType, string $fileName = ''): array
     {
         $httpClient = $this->client->getHttpClient();
         $headers    = $this->getTenantAccessTokenHeader();
@@ -213,7 +208,6 @@ class MessageService extends BaseService
         // Create a multipart request
         $file     = fopen($filePath, 'r');
         $fileName = $fileName ?: basename($filePath);
-        $filesize = filesize($filePath);
 
         $multipart = [
             [
@@ -232,7 +226,9 @@ class MessageService extends BaseService
         ];
 
         $response = $httpClient->request(
-            'POST', '/im/v1/files', [
+            'POST',
+            '/im/v1/files',
+            [
                 'multipart' => $multipart,
                 'headers'   => $headers,
             ]
@@ -241,8 +237,5 @@ class MessageService extends BaseService
         fclose($file);
 
         return $response;
-
     }
-
-
 }
